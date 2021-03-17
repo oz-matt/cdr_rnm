@@ -1,5 +1,3 @@
-`include "/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv"
-`include "/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/ResG.sv"
 `include "pfd.sv"
 
 `define EE_DEBUG
