@@ -1,0 +1,6 @@
+.//opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv
+../src//opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv
+.//opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/ResG.sv
+../src//opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/ResG.sv
+./pfd.sv
+./d_ff_with_async_rst.sv

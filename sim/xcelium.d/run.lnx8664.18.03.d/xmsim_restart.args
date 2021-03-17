@@ -1,0 +1,29 @@
+//
+// File created by:  xrun
+// Do not modify this file
+//
+-SPECTRE_ARGS
+"-ahdllibdir xcelium.d/AMSD/ahdlSimDB"
+-gui
+-AMSINPUT
+-ANALOGCONTROL
+../src/cf.scs
+-MESSAGES
++EMGRLOG
+xrun.log
+-XLSTIME
+1615939929
+-XLKEEP
+-XLMODE
+./xcelium.d/run.lnx8664.18.03.d
+-RUNMODE
+-CDSLIB
+./xcelium.d/run.lnx8664.18.03.d/cds.lib
+-HDLVAR
+./xcelium.d/run.lnx8664.18.03.d/hdl.var
+-XLNAME
+xrun
+-XLVERSION
+"TOOL:	xrun(64)	18.03-s001"
+-XLNAME
+./xcelium.d/run.lnx8664.18.03.d/iclab608_9118

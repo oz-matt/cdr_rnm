@@ -1,0 +1,48 @@
+
+Spectre (R) Circuit Simulator
+Version 17.1.0.161.isr2 64bit -- 30 Jan 2018
+Copyright (C) 1989-2017 Cadence Design Systems, Inc. All rights reserved worldwide. Cadence and Spectre are registered trademarks of Cadence Design Systems, Inc. All others are the property of their respective holders.
+
+Includes RSA BSAFE(R) Cryptographic or Security Protocol Software from RSA Security, Inc.
+
+User: iclab608   Host: iclab608   HostID: 7F0100   PID: 9143
+Memory  available: 5.7774 GB  physical: 8.1876 GB
+Linux   : NAME="Red Hat Enterprise Linux Server"
+CPU Type: Intel(R) Core(TM) i7-4790 CPU @ 3.60GHz
+All processors running at 3597.9 MHz
+        Socket: Processors
+        0:       0,  1
+        1:       2,  3
+        
+System load averages (1min, 5min, 15min) : 1.2 %, 3.0 %, 3.2 %
+This is a virtual machine
+
+
+Simulating `./xcelium.d/AMSD/ams_spice_in/./.amsspice_pre.ckt' on iclab608 at 8:12:11 AM, Wed Mar 17, 2021 (process id: 9143).
+Current working directory: /ws/cdr_rnm/sim
+Environment variable:
+    SPECTRE_DEFAULTS=
+Command line:
+    amsprimtool ./xcelium.d/AMSD/ams_spice_in/./.amsspice_pre.ckt  \
+        -noraw -va,amsspice_pre -ahdllibdir  \
+        xcelium.d/AMSD/ams_spice_in/ahdlSimDB =log  \
+        ./xcelium.d/AMSD/ams_spice_in/./.amsspice_pre.ckt.log -token  \
+        0001AF26C83A239465DFBB2CC00A229E73C4B63DFD3B60CB2080FE71B870359768D3A13CC50411B6749FEA2FE10B0F887DC39431F37A3ED44FD9EB2FB063238B7DC3BD10E17135D560C2EA2CB96F67C32681B0698E5E50FB3080A83DEEB8537F10B0A66AB46760C37286A66AB46760C37286920DED3C50FB2A80A83DED3C50FB10B0A83DED3C50FB10B0C86CA46519A270E1000041CF
+
+Loading /opt/cadence/XCELIUM1803/tools.lnx86/cmi/lib/64bit/5.0/libinfineon_sh.so ...
+Loading /opt/cadence/XCELIUM1803/tools.lnx86/cmi/lib/64bit/5.0/libphilips_o_sh.so ...
+Loading /opt/cadence/XCELIUM1803/tools.lnx86/cmi/lib/64bit/5.0/libphilips_sh.so ...
+Loading /opt/cadence/XCELIUM1803/tools.lnx86/cmi/lib/64bit/5.0/libsparam_sh.so ...
+Loading /opt/cadence/XCELIUM1803/tools.lnx86/cmi/lib/64bit/5.0/libstmodels_sh.so ...
+Reading file:  /ws/cdr_rnm/sim/xcelium.d/AMSD/ams_spice_in/.amsspice_pre.ckt
+Reading file:  /opt/cadence/XCELIUM1803/tools.lnx86/spectre/etc/configs/mapsubckt.cfg
+Reading file:  /opt/cadence/XCELIUM1803/tools.lnx86/spectre/etc/configs/spectre.cfg
+Reading file:  /ws/cdr_rnm/src/cf.scs
+Time for NDB Parsing: CPU = 185.667 ms, elapsed = 254.86 ms.
+Time accumulated: CPU = 226.98 ms, elapsed = 254.877 ms.
+Peak resident memory used = 44.8 Mbytes.
+
+Reading link:  /opt/cadence/XCELIUM1803/tools.lnx86/spectre/etc/ahdl/discipline.h
+Reading file:  /opt/cadence/XCELIUM1803/tools.lnx86/spectre/etc/ahdl/disciplines.vams
+Reading link:  /opt/cadence/XCELIUM1803/tools.lnx86/spectre/etc/ahdl/constants.h
+Reading file:  /opt/cadence/XCELIUM1803/tools.lnx86/spectre/etc/ahdl/constants.vams

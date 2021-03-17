@@ -1,0 +1,106 @@
+xrun(64): 18.03-s001: (c) Copyright 1995-2018 Cadence Design Systems, Inc.
+TOOL:	xrun(64)	18.03-s001: Started on Mar 17, 2021 at 08:12:09 CST
+xrun
+	-gui
+	-access +rw
+	-incdir ../src
+	../src/cf.scs
+	/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg.sv
+	../top.sv
+file: /opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg.sv
+    tv=`rtype(driver[i].V);
+                         |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg.sv,105|25): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+    ti=`rtype(driver[i].I);
+                         |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg.sv,106|25): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+    tr=`rtype(driver[i].R);
+                         |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg.sv,107|25): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+	package worklib.EE_pkg:sv
+		errors: 0, warnings: 3
+file: ../top.sv
+  if (abs(Vout-vval)>vtol || vval===`Z || Vout===`Z) Vout=vval;
+                                   |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv,34|35): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+(`include file: /opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv line 44, file: ../top.sv line 1)
+  if (abs(Vout-vval)>vtol || vval===`Z || Vout===`Z) Vout=vval;
+                                                |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv,34|48): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+(`include file: /opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv line 44, file: ../top.sv line 1)
+assign imeas = (vval===`Z)? 0 : (rs===0)? P.I : (P.V-vval)/rs;
+                      |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv,42|22): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+(`include file: /opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv line 44, file: ../top.sv line 1)
+assign imeas = (vval===`Z)? 0 : (rs===0)? P.I : (P.V-vval)/rs;
+                                     |
+xmvlog: *W,NSVCER (/opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv,42|37): Real valued operands to === (case equality) operator is non-standard Verilog [4.1(IEEE)].
+(`include file: /opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg_examples/VsrcG.sv line 44, file: ../top.sv line 1)
+	module worklib.VsrcG:sv
+		errors: 0, warnings: 4
+	module worklib.ResG:sv
+		errors: 0, warnings: 0
+	module worklib.d_ff_with_async_rst:sv
+		errors: 0, warnings: 0
+	module worklib.pfd:sv
+		errors: 0, warnings: 0
+	module worklib.top:sv
+		errors: 0, warnings: 0
+		Caching library 'worklib' ....... Done
+	Elaborating the design hierarchy:
+	Top level design units:
+		EE_pkg
+		$unit_0x0b50e47f
+		VsrcG
+		ResG
+		top
+xmelab: *W,DSEMEL: This SystemVerilog design will be simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
+	Building instance overlay tables: .................... Done
+	Generating native compiled code:
+		worklib.d_ff_with_async_rst:sv <0x620de3e9>
+			streams:   2, words:   419
+		worklib.pfd:sv <0x0d1ac505>
+			streams:   2, words:  1026
+		worklib.top:sv <0x5457e7a7>
+			streams:  11, words:  4356
+		worklib.ResG:sv <0x27729a01>
+			streams:   2, words:   924
+		worklib.VsrcG:sv <0x3a0818fc>
+			streams:   3, words:  1422
+		worklib.EE_pkg:sv <0x38aa0a26>
+			streams:   2, words:  8399
+	Building instance specific data structures.
+	Loading native compiled code:     .................... Done
+	Design hierarchy summary:
+		                 Instances  Unique
+		Modules:                 6       5
+		Verilog packages:        1       1
+		Resolved nets:           1       1
+		Registers:              37      33
+		Scalar wires:           15       -
+		Vectored wires:          4       -
+		Always blocks:           4       3
+		Initial blocks:          2       2
+		Parallel blocks:         1       1
+		Cont. assignments:       3       5
+		Pseudo assignments:      7       7
+		Compilation units:       1       1
+		Simulation timescale:  1ps
+	Writing initial simulation snapshot: worklib.VsrcG:sv
+xmsim: *W,ANAIGN: -analogcontrol file specified when analog solver is not used.
+xmsim: *W,DSEM2009: This SystemVerilog design is simulated as per IEEE 1800-2009 SystemVerilog simulation semantics. Use -disable_sem2009 option for turning off SV 2009 simulation semantics.
+
+-------------------------------------
+Relinquished control to SimVision...
+xcelium> 
+xcelium> source /opt/cadence/XCELIUM1803/tools/xcelium/files/xmsimrc
+xcelium> database -open waves -into waves.shm -default
+Created default SHM database waves
+xcelium> probe -create -shm top.d top.down top.finalclk top.refclk top.up
+Created probe 1
+xcelium> run
+Simulation complete via $finish(1) at time 10 US + 0
+../top.sv:32     $finish();
+xcelium> ^C
+xcelium> exit
+TOOL:	xrun(64)	18.03-s001: Exiting on Mar 17, 2021 at 08:12:55 CST  (total: 00:00:46)

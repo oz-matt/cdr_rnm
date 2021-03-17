@@ -1,0 +1,5 @@
+//
+// File created by:  xrun
+// Do not modify this file
+
+s1::(17Mar2021:08:12:09):( xrun -gui -access +rw -incdir ../src ../src/cf.scs /opt/cadence/XCELIUM1803/tools/affirma_ams/etc/dms/EE_pkg.sv ../top.sv )
