@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 
 module d_ff_with_async_rst(
     input d,

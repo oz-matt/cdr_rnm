@@ -1,3 +1,2 @@
-//Control File
 saveNodes options rawfmt=sst2
 timeDom tran stop=3500u errpreset=moderate
