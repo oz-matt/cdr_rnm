@@ -1,0 +1,9 @@
+`ifndef VAMS_SYMBOLS_GUARD
+`define VAMS_SYMBOLS_GUARD
+
+`include "EVsrcG.vams"
+`include "CPUMP_wreal.vams"
+`include "cap.vams"
+`include "LPF_single_wreal.vams"
+
+`endif

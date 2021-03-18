@@ -1,0 +1,18 @@
+`include "discipline.h"
+`include "constants.h"
+
+module cap(vp, vn);
+inout vp, vn;
+electrical vp, vn;
+parameter real c = 0;
+
+   analog
+      I(vp, vn) <+ ddt(c*V(vp, vn));
+endmodule
+
+
+
+
+
+
+
