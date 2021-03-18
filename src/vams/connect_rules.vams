@@ -1,0 +1,6 @@
+
+connectrules e2r_only;
+
+  connect E2R#(.vdelta(0.1), .vtol(0.001), .ttol(1n));
+
+endconnectrules

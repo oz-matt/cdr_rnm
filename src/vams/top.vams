@@ -1,0 +1,20 @@
+`include "discipline.h"
+`include "constants.h"
+
+`timescale 1ns/1ps
+
+module topams(
+    up,
+    down,
+    vout,
+    vsrc
+  );
+    input up; wreal up;
+    input down; wreal down;
+    inout vout; wreal vout;
+    inout vsrc; wreal vsrc;
+    
+    charge_pump cp1(up, down, vout, vsrc);
+
+endmodule
+

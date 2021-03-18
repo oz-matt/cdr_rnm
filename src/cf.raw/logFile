@@ -1,0 +1,24 @@
+HEADER
+"PSFversion" "1.00"
+"Log Generator" "drlLog rev. 1.0"
+"Log Time Stamp" "Fri Mar 19 07:34:17 2021"
+"simulator" "ams"
+"version" "17.1.0.161.isr2"
+"date" "7:34:17 AM, Fri Mar 19, 2021"
+"design" "(no title)"
+"signalNameType" "spectre"
+"simMode" "Spectre"
+"measdgt" 0
+"ingold" 2
+"sst2usecolon" 0
+TYPE
+"analysisInst" STRUCT(
+"analysisType" STRING *
+"dataFile" STRING *
+"format" STRING *
+"parent" STRING *
+"sweepVariable" ARRAY ( * ) STRING *
+"description" STRING *
+)
+VALUE
+END

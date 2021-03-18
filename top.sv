@@ -1,7 +1,6 @@
-`include "pfd_cosim.sv"
-
 import EE_pkg::*;
-
+import nreal::*;
+`include "pfd_cosim.sv"
 `include "EEnet_symbols.sv"
 `include "lpf_cosim.sv"
 `include "cp_cosim.sv"
@@ -24,17 +23,14 @@ module top();
   //lpf_cosim cp_lpf(node2);
   
   `ifdef AMS_COSIM
-    real VB[1:0] = {1e-2, 1e-2};
-    
-    //get ams
-    cpump cpump_wreal(ZN, ZP, 3.0 * down, 0.0, 3.0 * up, VB);
-    lpf_single#() lpf_wreal(3.0, ZP, ZN, B0, B1, VRESET, VCPOUT, VCNOUT);
+    real rup, rdn;
+    nreal nvout, nvsrc;
+    charge_pump cp1(rup, rdn, nvout, nvsrc);
   `endif
   
   
 
   initial begin
-  
     d = 1'b1;
     refclk = 1'b0;
     finalclk = 1'b0;
