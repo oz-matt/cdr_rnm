@@ -4,7 +4,7 @@
 module cap(vp, vn);
 inout vp, vn;
 electrical vp, vn;
-parameter real c = 0;
+parameter real c = 1p;
 
    analog
       I(vp, vn) <+ ddt(c*V(vp, vn));

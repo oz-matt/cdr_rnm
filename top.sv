@@ -23,10 +23,16 @@ module top();
   //lpf_cosim cp_lpf(node2);
   
   `ifdef AMS_COSIM
-    real rup, rdn, rvout, rvsrc;
+    //real rup, rdn, rvout, rvsrc;
     //nreal nvout, nvsrc;
-    EEnet nvout, nvsrc;
-    charge_pump cp1(, , nvout, nvsrc);
+    EEnet rup, rdn, nvout, nvsrc;
+    
+    assign rup = '{up*3.0, 0, 1};
+    assign rdn = '{down*3.0, 0, 1};
+    assign nvsrc = '{3.0, 0, 0};
+    assign nvout = '{0, 0, 1e12};
+    
+    cp_ams cp1(rup, rdn, nvout, nvsrc);
   `endif
   
   

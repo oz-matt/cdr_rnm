@@ -4,5 +4,8 @@
 `include "EVsrcG.vams"
 `include "CPUMP_wreal.vams"
 `include "charge_pump.va"
+`include "cp_ams.vams"
+`include "cap.vams"
+`include "res.va"
 
 `endif
