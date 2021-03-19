@@ -1,6 +1,50 @@
 
-connectrules e2r_only;
 
-  connect E2R#(.vdelta(0.1), .vtol(0.001), .ttol(1n));
+`include "disciplines.vams"
+`timescale 1ns / 1ps
+
+`define Vsup  3.0
+`define Vthi  2.0
+`define Vtlo  1.0
+`define Vlow  0
+`define Tr    0.4n
+`define Rlo   200
+`define Rhi   200
+`define Rx    40
+`define Rz    10M
+`define Vdelta      `Vsup/64
+`define Vdelta_tol  `Vdelta/4
+`define Tr_delta    `Tr/20
+`define rsupply     4
+`define rpull       1.5e3
+`define rlarge      9.0e3
+`define rweak       5.5e4
+`define rmedium     3.2e5
+`define rsmall      1.9e6
+
+connectrules NR_nreal;
+
+  connect E2L_0 #( .vsup(`Vsup), .vthi(`Vthi), .vtlo(`Vtlo),.tr(`Tr) );
+  connect L2E_0 #( .vsup(`Vsup), .vlo(`Vlow), .tr(`Tr), .rout(`Rlo) );
+  connect Bidir_0 #( .vsup(`Vsup), .vthi(`Vthi), .vtlo(`Vtlo), .vlo(`Vlow),
+                   .tr(`Tr), .rout(`Rlo) );
+  connect E2R #(.vdelta(`Vdelta), .vtol(`Vdelta_tol), .ttol(`Tr_delta));
+  connect R2E_0 #(.vdelta(`Vdelta), .tr(`Tr_delta), .tf(`Tr_delta), .rout(`Rlo));
+  // AMSLPS
+  connect L2E_0_LPS #( .vsup(`Vsup), .vlo(`Vlow), .tr(`Tr), .rout(`Rlo) );
+  connect Bidir_0_LPS #( .vsup(`Vsup), .vthi(`Vthi), .vtlo(`Vtlo),
+                   .tr(`Tr), .rout(`Rlo) );
+  connect E2L_0_LPS #( .vsup(`Vsup), .vthi(`Vthi), .vtlo(`Vtlo),.tr(`Tr) );
+  connect E2R_LPS #(.vdelta(`Vdelta), .vtol(`Vdelta_tol), .ttol(`Tr_delta));
+  connect R2E_0_LPS #(.vdelta(`Vdelta), .tr(`Tr_delta), .tf(`Tr_delta), .rout(`Rlo));
+  
+  connect ER_Bidir_LPS #(.vdelta(`Vdelta), .vtol(`Vdelta_tol), .ttol(`Tr_delta),
+        .tr(`Tr_delta), .tf(`Tr_delta), .rout(`Rlo), .rz(`Rz));
+        
+  connect ER_bidir #(.vdelta(`Vdelta), .vtol(`Vdelta_tol), .ttol(`Tr_delta),
+        .tr(`Tr_delta), .tf(`Tr_delta), .rout(`Rlo), .rz(`Rz));
+  connect ERN_bidir #(.vdelta(`Vdelta), .vtol(`Vdelta_tol), .ttol(`Tr_delta),
+        .tr(`Tr_delta), .tf(`Tr_delta), .rout(`Rlo), .rz(`Rz));
 
 endconnectrules
+

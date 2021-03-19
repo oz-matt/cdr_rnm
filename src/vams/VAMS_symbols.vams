@@ -3,5 +3,6 @@
 
 `include "EVsrcG.vams"
 `include "CPUMP_wreal.vams"
+`include "charge_pump.va"
 
 `endif

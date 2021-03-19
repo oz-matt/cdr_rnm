@@ -23,9 +23,10 @@ module top();
   //lpf_cosim cp_lpf(node2);
   
   `ifdef AMS_COSIM
-    real rup, rdn;
-    nreal nvout, nvsrc;
-    charge_pump cp1(rup, rdn, nvout, nvsrc);
+    real rup, rdn, rvout, rvsrc;
+    //nreal nvout, nvsrc;
+    EEnet nvout, nvsrc;
+    charge_pump cp1(, , nvout, nvsrc);
   `endif
   
   
@@ -52,5 +53,7 @@ module top();
     $finish();
   end
   
+  //assign nvout = rvout;
+  //assign nvsrc = rvsrc;
 
 endmodule
