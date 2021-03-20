@@ -1,0 +1,41 @@
+`include "discipline.h"
+`include "constants.h"
+
+// $Date: 1997/08/28 05:46:25 $
+// $Revision: 1.1 $
+//
+//
+// Based on the OVI Verilog-A Language Reference Manual, version 1.0 1996
+//
+//
+ 
+
+
+//--------------------
+// res
+//
+// -  resistor
+//
+// vp,vn:	terminals (V,A)
+//
+// INSTANCE parameters
+//    r = resistance (Ohms)
+//
+// MODEL parameters
+//    {none}
+//
+
+module res(vp, vn);
+inout vp, vn;
+parameter real r = 0;
+
+electrical vp, vn;
+
+   analog begin
+      V(vp, vn) <+ r*I(vp, vn);
+end
+
+endmodule
+
+
+

@@ -1,0 +1,54 @@
+/* --- Begin Copyright Block -----[ do not move or remove ]------ */
+/*                                                                */
+/* Copyright (c) 2014, Cadence Design Systems, Inc.               */
+/* All rights reserved. This model library is intended for use    */
+/* with products only from Cadence Design Systems, Inc.           */
+/* The use or sharing of any models from this library or any of   */
+/* its modified/extended form is strictly prohibited with any     */
+/* non-Cadence products. These models are provided for            */
+/* illustration purposes only.                                    */ 
+/*                                                                */
+/* --- End Copyright Block -------------------------------------- */
+
+// EVRsrc is a differential voltage source with series resistance from P to N.
+// Inputs vval and rval define the voltage and resistance.
+// Output imeas returns value of the current flowing (PtoN) in the source.
+// 
+// Updated: 2013-07-17 (ronv)  
+
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module  EVRsrc(P,N,vval,rval,imeas);
+inout P,N; electrical P,N;
+input wreal vval,rval;
+output wreal imeas;
+
+parameter real vtol=1e-6; // voltage tolerance for iterations.
+parameter real tr=1n;     // risetime for analog changes
+parameter real rmin=1e-4; // minimum resistance
+
+real Rval,Rramp;          // resistance value, and ramped version
+real Vval,Vramp;          // voltage value, and ramped version
+real Imeas;               // measured current (toleranced & sampled)
+
+always begin
+  if (rval<1e12 && vval<1e12) Rval=max(rval,rmin);  // normal R
+  else                        Rval=1e15;    // else open circuit
+  @(rval);
+end
+
+analog begin 
+  if (abs(vval-Vval)>vtol)  Vval=vval;   // update on changes
+  Vramp = transition(Vval,0,tr);         // ramp to next value
+  Rramp = exp(transition(ln(Rval+1),0,tr))-1;   // quasilog ramping
+  
+  if (Rramp>1) I(P,N) <+ (V(P,N)-Vramp)/Rramp;  // normal conductance form
+  else         V(P,N) <+ Vramp+I(P,N)*Rramp;    // ideal voltage source form
+end
+
+always #1 if (abs(I(P,N)-Imeas)>1n) Imeas=I(P,N);
+assign imeas=Imeas;
+
+endmodule
+

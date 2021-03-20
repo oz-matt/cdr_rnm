@@ -1,0 +1,37 @@
+/* --- Begin Copyright Block -----[ do not move or remove ]------ */
+/*                                                                */
+/* Copyright (c) 2014, Cadence Design Systems, Inc.               */
+/* All rights reserved. This model library is intended for use    */
+/* with products only from Cadence Design Systems, Inc.           */
+/* The use or sharing of any models from this library or any of   */
+/* its modified/extended form is strictly prohibited with any     */
+/* non-Cadence products. These models are provided for            */
+/* illustration purposes only.                                    */ 
+/*                                                                */
+/* --- End Copyright Block -------------------------------------- */
+
+// CapG is a single-ended capacitor from P to ground.
+// Parameters c and rs define capacitance and optional series resistance.
+// Paremeter ic is the initial voltage on the capacitor at time zero.
+//
+// Electrical version for comparison to EE model.
+
+// Updated: 2013-07-17 (ronv)
+
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module  ECapG(P);
+inout P; electrical P;
+
+parameter real c=1e-9;     // capacitance
+parameter real rs=0;       // series resistance
+parameter real ic=0;       // initial capacitor voltage at time zero
+parameter real tinc=1e-9;  // not used in electrical model
+parameter real vtol=1e-4;  // not used in electrical model
+
+// Integral equation for capacitor with initial condition and series resistor:
+analog  V(P) <+ idt(I(P)/c,ic) + rs*I(P);
+
+endmodule
+

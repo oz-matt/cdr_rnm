@@ -1,0 +1,43 @@
+/* --- Begin Copyright Block -----[ do not move or remove ]------ */
+/*                                                                */
+/* Copyright (c) 2014, Cadence Design Systems, Inc.               */
+/* All rights reserved. This model library is intended for use    */
+/* with products only from Cadence Design Systems, Inc.           */
+/* The use or sharing of any models from this library or any of   */
+/* its modified/extended form is strictly prohibited with any     */
+/* non-Cadence products. These models are provided for            */
+/* illustration purposes only.                                    */ 
+/*                                                                */
+/* --- End Copyright Block -------------------------------------- */
+
+// EResG is an electrical resistor from P to ground.
+// Input rval defines the resistance.
+
+// Updated: 2013-07-17 (ronv)
+
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module  EResG(P,rval);
+inout P; electrical P;
+input wreal rval;
+
+parameter real r=0;    // resistance value if rval nonpositive
+parameter real tr=1n;  // risetime for analog changes
+real Rval,Rramp;       // resistance value, and analog ramped version
+
+always begin
+  if (rval>0)       Rval=rval;   // normal resistance
+  else if (rval<=0) Rval=r;      // default for 0 or negative R
+  else              Rval=1e15;   // high Z
+  @(rval);
+end
+
+// Drive resistance onto output pin:
+analog begin
+  Rramp = exp(transition(ln((Rval+1)),0,tr))-1;
+  if (Rramp>1) I(P) <+ V(P)/Rramp;    // normal conductnace form
+  else         V(P) <+ I(P)*Rramp;    // ideal voltage source form
+end
+endmodule
+

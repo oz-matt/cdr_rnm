@@ -1,0 +1,47 @@
+/* --- Begin Copyright Block -----[ do not move or remove ]------ */
+/*                                                                */
+/* Copyright (c) 2014, Cadence Design Systems, Inc.               */
+/* All rights reserved. This model library is intended for use    */
+/* with products only from Cadence Design Systems, Inc.           */
+/* The use or sharing of any models from this library or any of   */
+/* its modified/extended form is strictly prohibited with any     */
+/* non-Cadence products. These models are provided for            */
+/* illustration purposes only.                                    */ 
+/*                                                                */
+/* --- End Copyright Block -------------------------------------- */
+
+// EVsrcG is a single-ended voltage source from P to ground.
+// Input vval defines the voltage.
+// Output imeas is the returned value of the current flowing (PtoGND) through 
+// the source, so positive supply current is usually a negative number.
+
+// Updated: 2013-07-01 (ronv)
+
+`timescale 1ns/1ps
+`include "disciplines.vams"
+
+module  EVsrcG(P,vval,imeas);
+inout P; electrical P;
+input wreal vval;
+output wreal imeas;
+
+parameter real vtol=1e-6; // voltage tolerance for voltage updating
+parameter real rs=0;      // series resistance
+parameter real tr=1n;     // risetime for analog changes
+
+real Vval,Vramp;          // voltage value, and ramped version
+real Imeas;               // measured current (toleranced & sampled)
+
+analog begin
+  if (abs(vval-Vval)>vtol)  Vval=vval; // update on changes
+  Vramp = transition(Vval,0,tr);       // ramp to next value
+
+  if (rs>0) I(P) <+ (V(P)-Vramp)/rs;   // normal conductnace form
+  else      V(P) <+ Vramp;             // ideal voltage source form
+end
+
+always #1 if (abs(I(P)-Imeas)>1n) Imeas=I(P);
+assign imeas=Imeas;
+
+endmodule
+

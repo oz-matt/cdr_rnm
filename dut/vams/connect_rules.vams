@@ -1,0 +1,136 @@
+
+
+`include "disciplines.vams"
+`timescale 1ns / 1ps
+
+//Basic parameters
+`define vsup  1.8                  //Supply voltage based on vss
+`define tr    0.2n                 //Transition rising time
+`define rout  200                  //Output resistance
+
+//Extended parameters
+`define vss         0                        //Voltage of source and substrate
+`define vlo         `vss                     //Logic-0 output voltage
+`define vhi         `vsup+`vss               //Logic-1 output voltage
+`define vthi        `vlo+(`vhi-(`vlo))*2.0/3.0 //High threshold voltage
+`define vtlo        `vlo+(`vhi-(`vlo))/3.0     //Low threshold voltage
+`define vx          `vlo                     //Voltage from digital X
+`define vtol        (`vthi-(`vtlo))/4.0      //Voltage tolerance of cross
+`define tf          `tr                      //Transition falling Time
+`define txdel      (`tr)*4.0                //Delay of analog mid-range to X
+`define tdeltran   0                        //Delay of D to A transition
+`define ttoltran    (`tr)/10.0               //Time tolerance of transition
+`define ttolcross   (`tr)/4.0                //Time tolerance of cross
+`define rlo         `rout==0?200:`rout       //Output resistance of pull down
+`define rhi         `rout==0?200:`rout       //Output resistance of pull up
+`define rx          `rout==0?200:`rout       //Output resistance of pull X
+`define rz          10M                      //Output resistance of high-Z
+`define vdelta      (`vsup)/64.0             //Voltage delta of absdelta
+`define vtoldelta   (`vdelta)/4.0            //Voltage tolerance of absdelta
+`define ttoldelta   (`tr)/20.0               //Time tolerance of absdelta
+`define vpso        0.2                      //Vpso
+`define rsupply     4
+`define rpull       1.5e3
+`define rlarge      9.0e3
+`define rweak       5.5e4
+`define rmedium     3.2e5
+`define rsmall      1.9e6
+//Extended parameters for current mode
+`define currentmode 0                        //1 for wreal current
+`define clamp       0                        //1 to enable clamp
+`define rin         200                      //Current load resistance
+`define idelta      10u                      //Current delta of absdelta
+`define itoldelta   (`idelta)/4.0            //Current tolerance of absdelta
+`define ix          0                        //Current of wreal X
+`define vbias       `vss+(`vsup)/2.0         //Bias voltage of current load
+`define dvclamp     (`vsup)/20.0             //Voltage clamp zoon
+//Extended parameters for dyn_highz check
+`define enable_highz  0  // not enable dyn_highz check by default
+`define duration  5.00E-09  // it should be the same default value with that one from "spectre -h dyn_highz"
+//Extended parameters for EEnet to electrical
+`define Ts  1n      // [sec] sample rate of conversion
+`define Ra  100     // [ohms] assumed resistance of analog network
+`define MaxIter  4  // max number discrete changes per analog sample
+
+`define Vtol  1e-6  // [V] voltage tolerance 
+`define Itol  1e-10 // [A] current tolerance 
+`define Rrel  1e-4  // [-] fractional resistance tolerance
+`define Roff  1e12  // [ohms] resistance for high-impedance state
+`define Vx  0       // [V] analog output voltage for discrete X
+`define Rx  `Roff    // [ohms] analog output resistance for discrete X
+
+connectrules Cust_full_fast;
+
+    connect L2E_2 #(
+      .vsup(`vsup), .vlo(`vlo), .vthi(`vthi), .vtlo(`vtlo),
+      .vhi(`vhi), .vx(`vx),
+      .tr(`tr), .tf(`tf), .ttol_t(`ttoltran), .tdelay(`tdeltran),
+      .rlo(`rlo), .rhi(`rhi), .rx(`rx), .rz(`rz),
+      .r_SUPPLY(`rsupply), .r_PULL(`rpull),
+      .r_LARGE(`rlarge), .r_WEAK(`rweak), .r_MEDIUM(`rmedium),
+      .r_SMALL(`rsmall) );
+  connect E2L_2 #(
+      .vsup(`vsup), .vthi(`vthi), .vtlo(`vtlo), .vtol(`vtol),
+      .tr(`tr), .txdel(`txdel), .ttol_c(`ttolcross), .enable_highz(`enable_highz), .duration(`duration) );
+  connect Bidir_2 #(
+      .vsup(`vsup), .vthi(`vthi), .vtlo(`vtlo), .vlo(`vlo),
+      .vhi(`vhi), .vx(`vx), .vtol(`vtol),
+      .tr(`tr), .tf(`tf), .ttol_t(`ttoltran),
+      .tdelay(`tdeltran), .txdel(`txdel), .ttol_c(`ttolcross),
+      .rlo(`rlo), .rhi(`rhi), .rx(`rx), .rz(`rz),
+      .r_SUPPLY(`rsupply), .r_PULL(`rpull),
+      .r_LARGE(`rlarge), .r_WEAK(`rweak), .r_MEDIUM(`rmedium),
+      .r_SMALL(`rsmall), .enable_highz(`enable_highz), .duration(`duration) );
+  connect E2R #( .vdelta(`vdelta), .vtol(`vtoldelta), .ttol(`ttoldelta),
+      .vss(`vss), .vsup(`vsup),
+      .currentmode(`currentmode), .idelta(`idelta), .itol(`itoldelta),
+      .vbias(`vbias), .rin(`rin) );
+  connect R2E_2 #(
+      .vsup(`vsup), .vdelta(`vdelta), .vss(`vss), .vx(`vx),
+      .tr(`ttoldelta), .tf(`ttoldelta), .tdelay(`tdeltran),
+      .rout((`rout)==0?200:(`rout)), .rx(`rx), .rz(`rz),
+      .currentmode(`currentmode), .idelta(`idelta),
+      .clamp(`clamp), .dvclamp(`dvclamp), .ix(`ix), .idealmode((`rout) == 0) );
+  connect ER_bidir #(
+      .vdelta(`vdelta), .vtol(`vtoldelta), .ttol(`ttoldelta),
+      .tr(`ttoldelta), .tf(`ttoldelta), .tdelay(`tdeltran),
+      .rout((`rout)==0?200:(`rout)), .rz(`rz), .vsup(`vsup),
+      .currentmode(`currentmode), .idelta(`idelta), .itol(`itoldelta),
+      .vbias(`vbias), .rin(`rin),
+      .clamp(`clamp), .dvclamp(`dvclamp), .ix(`ix), .idealmode((`rout) == 0) );
+  connect L2R #( .vsup(`vsup), .vlo(`vlo), .vhi(`vhi) ); 
+  connect R2L #( .vsup(`vsup), .vlo(`vlo), .vhi(`vhi), .vtlo(`vtlo), .vthi(`vthi) );
+  connect RL_bidir #( .vsup(`vsup), .vlo(`vlo), .vhi(`vhi), .vtlo(`vtlo), .vthi(`vthi) ); 
+  // AMSLPS
+  connect L2E_2_LPS #(
+      .vsup(`vsup), .vlo(`vlo), .vthi(`vthi), .vtlo(`vtlo),
+      .vhi(`vhi), .vx(`vx),
+      .tr(`tr), .tf(`tf), .ttol_t(`ttoltran), .tdelay(`tdeltran),
+      .rlo(`rlo), .rhi(`rhi), .rx(`rx), .rz(`rz), .vpso(`vpso) );
+  connect Bidir_2_LPS #(
+      .vsup(`vsup), .vthi(`vthi), .vtlo(`vtlo), .vlo(`vlo), 
+      .vhi(`vhi), .vx(`vx), .vtol(`vtol),
+      .tr(`tr), .tf(`tf), .ttol_t(`ttoltran), 
+      .tdelay(`tdeltran), .txdel(`txdel), .ttol_c(`ttolcross),
+      .rlo(`rlo), .rhi(`rhi), .rx(`rx), .rz(`rz), .vpso(`vpso), .enable_highz(`enable_highz), .duration(`duration) );
+  connect E2L_2_LPS #(
+      .vsup(`vsup), .vthi(`vthi), .vtlo(`vtlo), .vtol(`vtol),
+      .tr(`tr), .txdel(`txdel), .ttol_c(`ttolcross), .enable_highz(`enable_highz), .duration(`duration) );
+  connect L2R_LPS #( .vsup(`vsup), .vlo(`vlo), .vhi(`vhi) ); 
+  connect R2L_LPS #( .vsup(`vsup), .vlo(`vlo), .vhi(`vhi), .vtlo(`vtlo), .vthi(`vthi) );
+  connect RL_Bidir_LPS #( .vsup(`vsup), .vlo(`vlo), .vhi(`vhi), .vtlo(`vtlo), .vthi(`vthi) ); 
+  connect E2R_LPS #( .vdelta(`vdelta), .vtol(`vtoldelta), .ttol(`ttoldelta), .currentmode(`currentmode) );
+  connect R2E_2_LPS #(
+      .vsup(`vsup), .vdelta(`vdelta), .vlo(`vlo), .vx(`vx),
+      .tr(`ttoldelta), .tf(`ttoldelta), .tdelay(`tdeltran),
+      .rout((`rout)==0?200:(`rout)), .rx(`rx), .rz(`rz), .vpso(`vpso), .currentmode(`currentmode) );
+  connect ER_Bidir_LPS #(
+      .vdelta(`vdelta), .vtol(`vtoldelta), .ttol(`ttoldelta), 
+      .tr(`ttoldelta), .tf(`ttoldelta), .tdelay(`tdeltran),
+      .rout((`rout)==0?200:(`rout)), .rz(`rz), .vpso(`vpso), .currentmode(`currentmode) );
+  connect E_EEnet_Bidir  #( .Ts(`Ts), .Ra(`Ra), .MaxIter(`MaxIter), .Vtol(`Vtol), .Itol(`Itol), .Rrel(`Rrel), .Roff(`Roff), .Vx(`Vx), .Rx(`Rx));
+  connect E_2_EEnet  #( .Ts(`Ts), .Ra(`Ra), .MaxIter(`MaxIter), .Vtol(`Vtol), .Itol(`Itol), .Rrel(`Rrel), .Roff(`Roff), .Vx(`Vx), .Rx(`Rx));
+  connect EEnet_2_E  #( .Ts(`Ts), .Ra(`Ra), .MaxIter(`MaxIter), .Vtol(`Vtol), .Itol(`Itol), .Rrel(`Rrel), .Roff(`Roff), .Vx(`Vx), .Rx(`Rx));
+
+endconnectrules
+

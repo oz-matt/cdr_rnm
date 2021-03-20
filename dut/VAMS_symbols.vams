@@ -1,0 +1,13 @@
+`ifndef VAMS_SYMBOLS_GUARD
+`define VAMS_SYMBOLS_GUARD
+
+`include "constants.vams"
+`include "disciplines.vams"
+
+//`include "CR_full_fast.vams"
+
+`include "top.vams"
+`include "EVsrcG.vams"
+`include "charge_pump.va"
+
+`endif
