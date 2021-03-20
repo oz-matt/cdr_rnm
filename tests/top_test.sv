@@ -1,9 +1,13 @@
 `ifndef TOP_TEST_SV
 `define TOP_TEST_SV
 
+`include "top_env.sv"
+
 class top_test extends uvm_test;
   `uvm_component_utils(top_test)
 
+  top_env m_env;
+  
   UVM_FILE debugf;
   
   uvm_root root;
@@ -11,7 +15,6 @@ class top_test extends uvm_test;
   extern function new(string name, uvm_component parent);
   extern function void build_phase(uvm_phase phase);
   extern function void start_of_simulation_phase(uvm_phase phase);
-  extern task run_phase(uvm_phase phase);
   extern function void final_phase(uvm_phase phase);
   
 endclass : top_test
@@ -23,7 +26,7 @@ endfunction : new
 
 
 function void top_test::build_phase(uvm_phase phase);
-
+  m_env = top_env::type_id::create("m_env", this);
 endfunction : build_phase
 
 function void top_test::start_of_simulation_phase(uvm_phase phase);
@@ -45,11 +48,6 @@ function void top_test::start_of_simulation_phase(uvm_phase phase);
   `uvm_info("start_of_simulation_phase", "Exiting ...",UVM_LOW)
 
 endfunction : start_of_simulation_phase
-
-task top_test::run_phase(uvm_phase phase);
-  #10000;
-  $finish();
-endtask : run_phase
 
 function void top_test::final_phase(uvm_phase phase);
     uvm_report_server svr;
