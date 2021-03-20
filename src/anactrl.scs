@@ -1,5 +1,0 @@
-*
-
-simOpt options save=all saveahdlvars=all
-doit   tran    stop=20us errpreset=moderate method=trap
-
