@@ -17,6 +17,8 @@ module top_dut(input refclk, output logic finalclk);
   EEnet cp_out;
   real ig;
   
+  //dms_top_assert dut_top_assert(.d(d), .refclk(refclk), .cp_out(cp_out));
+  
   pfd_cosim pll_pfd(d, refclk, finalclk, up, down);
   cp_cosim#(.v_vdd(3.0)) pll_cp(up, down, cp_out);
   
@@ -46,12 +48,10 @@ module top_dut(input refclk, output logic finalclk);
     forever #9 finalclk <= !finalclk;
   end
   
-  /*initial begin
-    #10000;
-    $display("node1: V is %5.3f, I is %5.3f, R is %5.3f", cp_out.V, cp_out.I, cp_out.R);
-    $display("ig: %5.3f", ig);
-    $finish();
-  end*/
+  initial begin
+    #9000;
+    d = 1'b0;
+  end
   
 endmodule
 

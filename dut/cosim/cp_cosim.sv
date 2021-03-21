@@ -8,7 +8,7 @@ import EE_pkg::*;
 module cp_cosim#(parameter v_vdd = 3.0)(
     input up,
     input down,
-    inout EEnet cp_out
+    EEnet cp_out
   );
 
   
