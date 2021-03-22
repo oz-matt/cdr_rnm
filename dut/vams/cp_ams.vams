@@ -1,6 +1,5 @@
 `include "discipline.h"
 `include "constants.h"
-`include "VAMS_symbols.vams"
 
 `timescale 1ns/1ps
 
@@ -15,13 +14,14 @@ module cp_ams(
     inout fout; electrical fout;
     inout vsrc; electrical vsrc;
     
-    electrical vout;
+    //electrical vout;
     
     
-    charge_pump cp1(up, down, vout, vsrc);
-    cap#(.c(5p)) c1(vout, gnd);
-    res#(.r(50)) r1(vout, fout);
-    cap#(.c(50p)) c2(fout, gnd);
+    charge_pump cp1(up, down, fout, vsrc);
+    //ECapG#(.c(10e-12), .rs(10), .ic(1.5)) ec1(nvout);
+    //cap#(.c(5p)) c1(vout, gnd);
+    //res#(.r(50)) r1(vout, fout);
+    //cap#(.c(50p)) c2(fout, gnd);
 
 endmodule
 

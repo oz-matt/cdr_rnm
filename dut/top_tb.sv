@@ -4,14 +4,31 @@ module top_tb();
   import uvm_pkg::*;
   import EE_pkg::*;
 
-  `include "../tests/test_list.sv"
+  `include "../tests/top_test.sv"
 
   logic refclk, fclk;
   
   top_dut dut(refclk, fclk);
   initial begin
     refclk = 1'b0;
-    forever #10 refclk <= !refclk;
+    forever begin
+      repeat(10) begin
+        #11
+        refclk <= !refclk;
+      end
+      repeat(10) begin
+        #10
+        refclk <= !refclk;
+      end
+      repeat(10) begin
+        #8
+        refclk <= !refclk;
+      end
+      repeat(10) begin
+        #7
+        refclk <= !refclk;
+      end
+    end
   end
   
   initial begin
