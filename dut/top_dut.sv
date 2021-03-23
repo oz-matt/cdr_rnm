@@ -29,9 +29,9 @@ module top_dut(input refclk, output logic finalclk);
     assign rup = '{up*3.0, 0, 1.0};
     assign rdn = '{down*3.0, 0, 1.0};
     assign nvsrc = '{3.0, 0, 0};
-    assign ams_cp_unfiltered = '{0, 0, 1.0};
+    assign ams_cp_unfiltered = '{0, 0, 3e4};
     
-    charge_pump ams_cp(rup, rdn, ams_cp_unfiltered, nvsrc);
+    charge_pump#(.iamp(1e-4)) ams_cp(rup, rdn, ams_cp_unfiltered, nvsrc);
     //EVRsrc er1(ams_cp_unfiltered, ams_cp_out, 0.0, 10.0, ier);
     //ECapG#(.c(10e-12), .rs(10.0), .ic(1.5)) ec1(ams_cp_out);
   `endif

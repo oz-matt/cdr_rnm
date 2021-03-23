@@ -87,7 +87,8 @@ parameter real tfall=1n from (0:inf);
          iout_val = iamp*i_mult(V(siginc),V(sigdec),vtrans);
       end
       @ (cross(V(sigdec) - vtrans, 0)) begin
-         iout_val = iamp*i_mult(V(siginc),V(sigdec),vtrans);
+         iout_val = iamp * (V(vout) > 0.01) /*Only allow current draw from load if it has positive voltage*/ 
+         * i_mult(V(siginc),V(sigdec),vtrans);
       end
 
       I(vsrc, vout) <+ transition(iout_val,tdel,trise,tfall);
