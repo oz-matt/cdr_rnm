@@ -13,7 +13,7 @@ module top_tb();
     refclk = 1'b0;
     forever begin
       repeat(10) begin
-        #11
+        #12
         refclk <= !refclk;
       end
       repeat(10) begin
@@ -25,7 +25,7 @@ module top_tb();
         refclk <= !refclk;
       end
       repeat(10) begin
-        #7
+        #13
         refclk <= !refclk;
       end
     end
@@ -36,7 +36,7 @@ module top_tb();
     run_test();
  end
  
-  bind dut dms_top_assert dut_top_assert(.*, .cp_out(cp_out));
+  bind dut dms_top_assert dut_top_assert(.*, .dms_cp_out(dms_cp_out));
   
 endmodule
 

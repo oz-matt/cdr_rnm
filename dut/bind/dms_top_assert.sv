@@ -7,20 +7,20 @@ module dms_top_assert(
     input d,
     input up,
     input down,
-    EEnet cp_out,
+    EEnet dms_cp_out,
     input real ig
   );
   
-  real cp_out_V;
-  bit[63:0] cp_out_WV;
+  real dms_cp_out_V;
+  bit[63:0] dms_cp_out_WV;
   
   always @* begin
-    cp_out_WV = $realtobits(cp_out.V);
-    cp_out_V = $bitstoreal(cp_out_WV);
+    dms_cp_out_WV = $realtobits(dms_cp_out.V);
+    dms_cp_out_V = $bitstoreal(dms_cp_out_WV);
   end
   
   initial begin
-    cp_out_V = 0;
+    dms_cp_out_V = 0;
   end
   
   ERROR_d_sent_low: 
@@ -28,8 +28,8 @@ module dms_top_assert(
     
   ERROR_cp_out_range_check: 
     `assert_clk(refclk, 
-      (cp_out_V >= 0.0) &&
-      (cp_out_V <= 3.0));
+      (dms_cp_out_V >= 0.0) &&
+      (dms_cp_out_V <= 3.0));
     
   ERROR_dms_pfd_xzcheck:
     `assert_clk(refclk, 

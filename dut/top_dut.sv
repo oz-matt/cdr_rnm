@@ -10,37 +10,37 @@ import nreal::*;
 module top_dut(input refclk, output logic finalclk);
 
   logic d, up, down;
-  EEnet cp_out;
+  EEnet dms_cp_unfiltered, dms_cp_out;
   real ig;
   
   dms_pfd pll_pfd(d, refclk, finalclk, up, down);
-  dms_cp#(.v_vdd(3.0)) pll_cp(up, down, cp_out);
+  dms_cp#(.v_vdd(3.0)) pll_cp(up, down, dms_cp_unfiltered);
   
   //IsrcG ics1(node1, refclk * -3e-3);
-  //VRsrc r1(node1, node2, 0.0, 1, ig);
-  CapG#(.c(10e-12), .rs(10), .ic(1.5)) c1(cp_out);
-  //ResG r1(cp_out, 50.0);
-  //lpf_cosim cp_lpf(node2);
+  //VRsrc r1(dms_cp_unfiltered, dms_cp_out, 0.0, 10.0, ig);
+  //CapG#(.c(10e-12), .rs(10.0), .ic(1.5)) c1(dms_cp_out);
+  //ResG r1(dms_cp_unfiltered, 50.0);
+  //lpf_cosim cp_lpf(dms_cp_out);
   
   `ifdef AMS_COSIM
-    //real rup, rdn, rvout, rvsrc;
-    //nreal nvout, nvsrc;
-    EEnet rup, rdn, nvout, nvsrc;
+    EEnet rup, rdn, ams_cp_unfiltered, nvsrc, ams_cp_out;
+    real ier;
     
-    assign rup = '{up*3.0, 0, 1};
-    assign rdn = '{down*3.0, 0, 1};
+    assign rup = '{up*3.0, 0, 1.0};
+    assign rdn = '{down*3.0, 0, 1.0};
     assign nvsrc = '{3.0, 0, 0};
-    assign nvout = '{0, 0, 1};
+    assign ams_cp_unfiltered = '{0, 0, 1.0};
     
-    charge_pump ams_cp(rup, rdn, nvout, nvsrc);
-    ECapG#(.c(10e-12), .rs(10), .ic(1.5)) ec1(nvout);
+    charge_pump ams_cp(rup, rdn, ams_cp_unfiltered, nvsrc);
+    //EVRsrc er1(ams_cp_unfiltered, ams_cp_out, 0.0, 10.0, ier);
+    //ECapG#(.c(10e-12), .rs(10.0), .ic(1.5)) ec1(ams_cp_out);
   `endif
   
 
   initial begin
     d = 1'b1;
     finalclk = 1'b0;
-    forever #9 finalclk <= !finalclk;
+    forever #11 finalclk <= !finalclk;
   end
   
 endmodule
