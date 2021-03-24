@@ -10,16 +10,17 @@ import nreal::*;
 module top_dut(input refclk, output logic finalclk);
 
   logic d, up, down;
-  EEnet dms_cp_unfiltered, dms_cp_out;
+  EEnet dms_cp_unfiltered, dms_cp_out, src3v;
   real ig;
+  
+  assign src3v = '{3.0, 0.0, 0.0};
   
   dms_pfd pll_pfd(d, refclk, finalclk, up, down);
   dms_cp#(.v_vdd(3.0)) pll_cp(up, down, dms_cp_unfiltered);
   
-  //IsrcG ics1(node1, refclk * -3e-3);
-  //VRsrc r1(dms_cp_unfiltered, dms_cp_out, 0.0, 10.0, ig);
-  //CapG#(.c(10e-12), .rs(10.0), .ic(1.5)) c1(dms_cp_out);
-  //ResG r1(dms_cp_unfiltered, 50.0);
+  //VRsrc r1(src3v, dms_cp_unfiltered, 0.0, 1e3, ig);
+  CapG#(.c(10e-12), .rs(0.0), .ic(1.5)) c1(dms_cp_unfiltered);
+  //ResG r2(dms_cp_unfiltered, 1e3);
   //lpf_cosim cp_lpf(dms_cp_out);
   
   `ifdef AMS_COSIM
@@ -32,8 +33,8 @@ module top_dut(input refclk, output logic finalclk);
     assign ams_cp_unfiltered = '{0, 0, 3e4};
     
     charge_pump#(.iamp(1e-4)) ams_cp(rup, rdn, ams_cp_unfiltered, nvsrc);
-    //EVRsrc er1(ams_cp_unfiltered, ams_cp_out, 0.0, 10.0, ier);
-    //ECapG#(.c(10e-12), .rs(10.0), .ic(1.5)) ec1(ams_cp_out);
+    //EVRsrc er1(ams_cp_unfiltered, ams_cp_out, 0.0, 0.0, ier);
+    //ECapG#(.c(10e-12), .rs(10.0), .ic(1.5)) ec1(ams_cp_unfiltered);
   `endif
   
 
