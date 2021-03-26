@@ -1,0 +1,16 @@
+`include "discipline.h"
+`include "constants.h"
+
+//(* instrument_module *) This flag signals Spectre to ignore hidden states during sim
+
+module ams_lpf(vout);
+  inout vout; electrical vout;
+  
+  parameter real cap_to_gnd = 3e-12 from [0:inf);
+  parameter real series_res = 5206 from [0:inf);
+  parameter real series_cap_to_gnd = 36e-12 from [0:inf);
+
+  ECapG#(.c(cap_to_gnd), .rs(0.0), .ic(1.5)) ec1(vout);
+  ECapG#(.c(series_cap_to_gnd), .rs(series_res)) ec2(vout);
+
+endmodule

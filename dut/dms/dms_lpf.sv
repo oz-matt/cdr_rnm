@@ -12,7 +12,14 @@ module dms_lpf(
   parameter real series_res = 5206;
   parameter real series_cap_to_gnd = 36e-12;
   
-  CapG#(.c(cap_to_gnd), .rs(0.0)) ctg(P);
-  CapG#(.c(series_cap_to_gnd), .rs(series_res)) srsc(P);
+  EEnet mid, vgnd;
+  
+  real ig;
+  
+  assign vgnd = '{0.2,0,0};
+  
+  fcap#(.c(cap_to_gnd), .rs(0.0), .ic(1.5)) ctg(P, vgnd);
+  //VRsrc r1(P, vgnd, 0.0, series_res, ig);
+  //fcap#(.c(series_cap_to_gnd), .rs(0.0)) srsc(mid, vgnd);
   
 endmodule

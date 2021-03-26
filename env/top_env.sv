@@ -54,7 +54,7 @@ task top_env::run_phase(uvm_phase phase);
     
     phase.raise_objection(this);
     
-    #10000;
+    #90000;
     
     phase.drop_objection(this);
     
