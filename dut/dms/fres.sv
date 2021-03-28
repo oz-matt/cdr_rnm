@@ -64,16 +64,34 @@ always begin
   // ER = (P.R)(newPR) / (newPR - P.R)
   // EV = ((P.V)(newPR) - (P.R)(newPV))/(newPR - P.R)
   
-  // NEW effective sum of Voltages and sum of Resistances with our resistor plugged in
-  ER_P = (RPin * RPdrv) / (RPdrv - RPin);  
-  EV_P = ((VPin * RPdrv) - (RPin * VPdrv)) / (RPdrv-RPin);  
-  ER_N = (RNin * RNdrv) / (RNdrv - RNin);          
-  EV_N = ((VNin * RNdrv) - (RNin * VNdrv)) / (RNdrv-RNin);
+  if (RPin<rmax && (RPdrv===`wrealZState || RPin!=RPdrv || RNdrv===`wrealZState || RNin!=RNdrv)) begin // normal case
+    if (RPdrv<rmax) begin                       // compute effective vals
+      // NEW effective sum of Voltages and sum of Resistances with our resistor plugged in
+      ER_P = (RPin * RPdrv) / (RPdrv - RPin);  
+      EV_P = ((VPin * RPdrv) - (RPin * VPdrv)) / (RPdrv-RPin);  
+      ER_N = (RNin * RNdrv) / (RNdrv - RNin);          
+      EV_N = ((VNin * RNdrv) - (RNin * VNdrv)) / (RNdrv-RNin); 
+    end 
+    else begin // undriven
+      ER_P = RPin;  
+      EV_P = VPin;  
+      ER_N = RNin;          
+      EV_N = VNin; 
+    end
+  end
+  else begin
+    ER_P = `wrealZState;  
+    EV_P = VPin;  
+    ER_N = `wrealZState;          
+    EV_N = VNin; 
+  end
+      
   
-  VPdrv <= EV_N; // Could check if the difference between VPdrv and EV_N > vtol
-  RPdrv <= ((ER_N + rval) < rmax)? ER_N + rval : `wrealZState;
-  VNdrv <= EV_P;
-  RNdrv <= ((ER_P + rval) < rmax)? ER_P + rval : `wrealZState;
+  
+  VPdrv = EV_N; // Could check if the difference between VPdrv and EV_N > vtol
+  RPdrv = ((ER_N + rval) < rmax)? ER_N + rval : `wrealZState;
+  VNdrv = EV_P;
+  RNdrv = ((ER_P + rval) < rmax)? ER_P + rval : `wrealZState;
   
   @(VPin, RPin, VNin, RNin); // Wait for next change
 end
