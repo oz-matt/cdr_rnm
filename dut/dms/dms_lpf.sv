@@ -18,7 +18,7 @@ module dms_lpf(
   
   assign vgnd = '{0.2,0,0};
   
-  fcap#(.c(cap_to_gnd), .rs(0.0), .ic(1.5)) ctg(P, vgnd);
+  //fcap#(.c(cap_to_gnd), .rs(0.0), .ic(1.5)) ctg(P, vgnd);
   //VRsrc r1(P, vgnd, 0.0, series_res, ig);
   //fcap#(.c(series_cap_to_gnd), .rs(0.0)) srsc(mid, vgnd);
   
