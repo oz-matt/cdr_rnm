@@ -21,8 +21,9 @@ module top_dut(input refclk, output logic finalclk);
   VRsrc r1(vcc, vp, 0.0, 700,);
   ResG r2(vp, 700);
   VRsrc r3(vp, mid1, 0.0, 700,);
-  fres r4(mid1, mid2, 700);
-  //VRsrc r4(mid1, mid2, 0.0, 700,);
+  //fres r4(mid1, mid2, 1e-4);
+  VRsrc r4(mid1, mid2, 0.0, 0.0,);
+  CapG c1(mid1);
   VRsrc r5(mid2, mid3, 0.0, 700,);
 
   VRsrc r6(vdd, mid3, 0.0, 700,);
@@ -31,14 +32,13 @@ module top_dut(input refclk, output logic finalclk);
   assign osc_v = mid1.V - mid2.V;
   
   VRsrc r10(vp, mid12, 0.0, 700,);
-  VRsrc r11(mid12, mid22, 0.0, 700,);
+  fcap fc1(mid12, mid22);
   VRsrc r12(mid22, mid32, 0.0, 700,);
 
   VRsrc r13(vdd, mid32, 0.0, 700,);
   ResG r14(mid32, 700);
 
   assign osc_v_ref = mid12.V - mid22.V;
-
 
   /*logic d, up, down;
   EEnet dms_cp_unfiltered, dms_cp_out, vgnd;
