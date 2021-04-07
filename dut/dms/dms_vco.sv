@@ -1,7 +1,15 @@
 
-module dms_vco(inout EEnet vcoout);
+module dms_vco(
+    inout EEnet vctrl,
+    inout EEnet vcoout  
+  );
 
   bit[63:0] kgain_lut[int]; // associate array for the k factor look-up table
+  
+  real clk_period = 1000;
+  EEnet vcoout2;
+  rnm_clkgen rmn_clkgen_i(vcoout2, 5.0, 30000);
+  vpulse#(.width(10000), .period(30000), .transition(100)) vp_gen(vcoout, 5.0);
   
   initial begin
     $readmemb("vcogain.lut", kgain_lut);

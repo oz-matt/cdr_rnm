@@ -36,7 +36,7 @@ module top_tb();
     run_test();
  end
  
-  bind dut dms_top_assert dut_top_assert(.*, .dms_cp_out(dms_cp_out));
+  //bind dut dms_top_assert dut_top_assert(.*, .dms_cp_out(dms_cp_out));
   
 endmodule
 

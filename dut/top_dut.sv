@@ -7,11 +7,88 @@ import nreal::*;
 
 //`define AMS_COSIM // Define to run DMS and AMS co-sim. Do not define for just DMS sim
 
+`define twopi 6.28318530718
+
 module top_dut(input refclk, output logic finalclk);
 
-  EEnet vdd, vcc, vp, mid1, mid2, mid3, mid12, mid22, mid32;
-  logic ck, d;
-  real osc_v, osc_v_ref;
+real OUT; real IN, Fin, Vdc, Vpk, Phs=0;
+logic [3:0] poleTrim, gainTrim;
+
+dms_lpf1p #(.Ts(10)) LPF(OUT,IN, poleTrim, gainTrim);	    // filter Instance to be tested
+
+initial begin                                       // test procedure 
+  poleTrim=4'h9; gainTrim=4'hF;                     // single pole at 5MHz, unity (max) gain
+  Fin=1e6;Vdc=0;Vpk=1;	                            // 1MHz input signal
+  #2000                                             // run for 2 cycles
+  Fin=5e6;   #1200                                  // Fin matches poleTrim (expect 0.7 out)
+  gainTrim=4'h8;   #1200                            // mid gain
+  gainTrim=4'h1;   #1200                            // lower gain
+  gainTrim=4'hB;   #1200                            // higher gain
+  Vdc=1;    #2400                                   // DC shift of input signal
+  Vdc=0;    #2400                                   // back to zero DC level
+  Fin=10e6; #1200                                   // now at 2*poleTrim (>0.35 out)
+  gainTrim=4'hF;  #1200                             // max gain
+  Fin=16e6;  #1200                                  // now at 1.6*poleTrim (0.26 out)
+  poleTrim=4'hF;   #1200                            // change poleTrim=Fin/2 (0.35 out)
+  poleTrim=4'h3;                                    // change poleTrim to 3
+  Fin=1e6;   #2000	                            // down to 1MHz input 
+
+  while (Fin<100e6) begin 
+    #(1e9/Fin) Fin = (Fin*1.08) ;                   // slow freq ramp
+  end
+  #200 $finish ;                                    // done with simulation
+end
+
+// Sine Input generation
+always begin	// Generate sinusoidal input signal
+  IN = Vdc + Vpk * $sin(`twopi * Phs);	// compute new value
+  #10 Phs = Phs+10*Fin/1e9;	  // update phase after time delay
+  if (Phs>=1) Phs = Phs-1; // keep phase in range 0 to 1
+end
+
+// Measuring output peak magnitude 
+real vhi,vlo, Vpk_out; reg up=0;	// variables for peak detector
+
+always @(OUT) begin	// Measure peak (vhi-vlo)/2 each cycle:
+  if (OUT<Vdc) begin	// if input is low
+    if (up) begin // if it was high, it just crossed
+      Vpk_out=(vhi-vlo)/2;  // compute peak difference
+      up=0; vlo=OUT; // put in low state & reset min value
+    end
+    if (OUT<vlo) vlo=OUT;  // save low peak
+  end
+
+  else begin // else input is high
+    if (!up) begin	// if it was low, it just crossed
+      Vpk_out=(vhi-vlo)/2;  // compute peak difference
+      up=1; vhi=OUT;	// put in high state & reset max value
+    end
+    if (OUT>vhi) vhi=OUT;  // save high peak
+  end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /*logic d, up, down;
+  EEnet dms_cp_unfiltered, dms_cp_out, dms_vco_out;
+  real ig;
   
   vpulse#(.width(10000), .period(30000), .transition(100)) vp_gen(vp, 5.0);
   
@@ -39,15 +116,14 @@ module top_dut(input refclk, output logic finalclk);
   ResG r14(mid32, 700);
 
   assign osc_v_ref = mid12.V - mid22.V;
-
-  /*logic d, up, down;
-  EEnet dms_cp_unfiltered, dms_cp_out, vgnd;
-  real ig;
+  
+  
   
   dms_pfd dms_pfd_i(d, refclk, finalclk, up, down);
   dms_cp#(.v_vdd(3.0), .iamp(7e-5)) dms_cp_i(up, down, dms_cp_unfiltered);
   
   dms_lpf dms_lpf_i(dms_cp_unfiltered);
+  dms_vco dms_vco_i(.vctrl(dms_cp_unfiltered), .vcoout(dms_vco_out));
   
   `ifdef AMS_COSIM
     EEnet rup, rdn, ams_cp_unfiltered, nvsrc;
@@ -61,24 +137,14 @@ module top_dut(input refclk, output logic finalclk);
     ams_cp#(.iamp(7e-5)) ams_cp_i(rup, rdn, ams_cp_unfiltered, nvsrc);
     ams_lpf ams_lpf_i(ams_cp_unfiltered);
   `endif
-  */
-
+  
   initial begin
     d = 1'b1;
     finalclk = 1'b0;
     forever #11 finalclk <= !finalclk;
   end
   
-  initial begin
-    ck = 1'b1;
-    forever begin
-      #10;
-      ck <= !ck;
-      #20;
-      ck <= !ck;
-    end
-  end
-  
+*/
 endmodule
 
 `endif
