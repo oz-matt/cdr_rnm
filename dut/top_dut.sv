@@ -11,60 +11,90 @@ import nreal::*;
 
 module top_dut(input refclk, output logic finalclk);
 
-real OUT; real IN, Fin, Vdc, Vpk, Phs=0;
-logic [3:0] poleTrim, gainTrim;
+real IN,OUT;       // filter input & output
+real Av;           // coefs passed to filter
+logic [3:0] Trim;  // Filter trim control
+real Fin,Vdc,Vpk;  // controls for input signal
+real Phs=0;        // phase for sine generator
+parameter real Ts=7;       // fixed timestep size (ns)
+real idealH_f;     // Calculate ideal freq response
 
-dms_lpf1p #(.Ts(10)) LPF(OUT,IN, poleTrim, gainTrim);	    // filter Instance to be tested
+ // INSTANTIATE THE FILTER TO BE TESTED
+dms_lpf2 #(.Ts (Ts*1e-9), .fpole0 (3e6), .fpole1 (5e6), .trimStep (250e3)) lpf2 (OUT, IN, Trim, Av);
 
-initial begin                                       // test procedure 
-  poleTrim=4'h9; gainTrim=4'hF;                     // single pole at 5MHz, unity (max) gain
-  Fin=1e6;Vdc=0;Vpk=1;	                            // 1MHz input signal
-  #2000                                             // run for 2 cycles
-  Fin=5e6;   #1200                                  // Fin matches poleTrim (expect 0.7 out)
-  gainTrim=4'h8;   #1200                            // mid gain
-  gainTrim=4'h1;   #1200                            // lower gain
-  gainTrim=4'hB;   #1200                            // higher gain
-  Vdc=1;    #2400                                   // DC shift of input signal
-  Vdc=0;    #2400                                   // back to zero DC level
-  Fin=10e6; #1200                                   // now at 2*poleTrim (>0.35 out)
-  gainTrim=4'hF;  #1200                             // max gain
-  Fin=16e6;  #1200                                  // now at 1.6*poleTrim (0.26 out)
-  poleTrim=4'hF;   #1200                            // change poleTrim=Fin/2 (0.35 out)
-  poleTrim=4'h3;                                    // change poleTrim to 3
-  Fin=1e6;   #2000	                            // down to 1MHz input 
+// Sine Input Generation
+always begin
+  IN = Vdc + Vpk*$sin(`twopi*Phs);  // compute input from levels & phase
+  #Ts Phs = Phs+Ts*Fin/1e9;       // update phase after delay
+  if (Phs>=1) Phs -= 1;           // keep phase in range 0 to 1
+  idealH_f = Av / $sqrt( ((1 + (Fin/3e6)**2)) * ((1 + (Fin/5e6)**2)) );
 
-  while (Fin<100e6) begin 
-    #(1e9/Fin) Fin = (Fin*1.08) ;                   // slow freq ramp
-  end
-  #200 $finish ;                                    // done with simulation
 end
 
-// Sine Input generation
-always begin	// Generate sinusoidal input signal
-  IN = Vdc + Vpk * $sin(`twopi * Phs);	// compute new value
-  #10 Phs = Phs+10*Fin/1e9;	  // update phase after time delay
-  if (Phs>=1) Phs = Phs-1; // keep phase in range 0 to 1
+
+// Test Procedure
+initial begin         // test procedure
+  Trim=4'h7; Av=1;   // Trim at mid, unity gain
+  Fin=1e6;Vdc=0;Vpk=1;// 1MHz input signal
+  #2000               // Run for 2 cycles
+  Fin=5e6;  #1200      // Fin matches Fp (expect 0.5 out)
+  Av=3;     #1200      // Higher gain
+  Av=0.2;   #1200      // Lower gain
+  Av=1;     #1200      // Back to unity gain
+  Vdc=1;    #4000      // DC shift of input signal
+  Trim = 4'hF; #2000   // Trim to Max
+  Vdc=0;    #1200      // back to zero DC level
+  // Sweep the value of Trim from max (15) to min (0)
+  // hold at each value for 600ns
+  //  <<<  Add Code Here >>>
+
+  #600;
+  Trim = 4'h7;        // back to middle
+  Fin=3e6; #1500      // now at fpole1
+  Fin=5e6; #1500      // now at fpole2
+  Trim = 4'h0;  #1500     // 
+  Trim = 4'hF;  #1500     // 
+  Trim = 4'h8; 
+  Fin=1e5;  #2000     // Down to 100kHz input and center trim
+  while (Fin<30e6) #(1e9/Fin) Fin=Fin*1.08; // slow freq ramp
+  #200 $stop;         // done with simulation
 end
+
 
 // Measuring output peak magnitude 
-real vhi,vlo, Vpk_out; reg up=0;	// variables for peak detector
 
-always @(OUT) begin	// Measure peak (vhi-vlo)/2 each cycle:
-  if (OUT<Vdc) begin	// if input is low
-    if (up) begin // if it was high, it just crossed
+real vhi,vlo;      // peak detector low/high measured
+real Vpk_out;      // output of detector = (vhi-vlo)/2
+reg up=0;          // state of detector
+real measGain;
+
+
+// PEAK DETECTOR: Compute (vhi-vlo)/2 for each cycle of output:
+always @(OUT) begin
+  if (OUT<Vdc) begin   // if input is low
+    if (up) begin      // if it was high, it just crossed
       Vpk_out=(vhi-vlo)/2;  // compute peak difference
-      up=0; vlo=OUT; // put in low state & reset min value
+      vlo=OUT;         // reset min value
+      up=0;            // put in low state
     end
     if (OUT<vlo) vlo=OUT;  // save low peak
   end
-
-  else begin // else input is high
-    if (!up) begin	// if it was low, it just crossed
+  else begin           // else input is high
+    if (!up) begin     // if it was low, it just crossed
       Vpk_out=(vhi-vlo)/2;  // compute peak difference
-      up=1; vhi=OUT;	// put in high state & reset max value
+      vhi=OUT;         // reset max value
+      up=1;            // put in hgh state
     end
     if (OUT>vhi) vhi=OUT;  // save high peak
   end
+end
+
+// Compute the Gain
+always @(Vpk_out) begin
+  if (Vpk_out > 0.0)
+     measGain = 20 * $log10(Vpk_out/Vpk);
+  else
+     measGain = -100.0;
 end
 
 
