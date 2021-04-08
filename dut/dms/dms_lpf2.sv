@@ -1,25 +1,25 @@
-// --- Begin Copyright Block -----[ do not move or remove ]------
-// Copyright (c) 2020, Cadence Design Systems, Inc. All rights reserved.
-
-// The model contained herein is the proprietary and confidential information 
-// of Cadence, and is supplied subject to, and may be used only by Cadences 
-// customer in accordance with a previously executed license and maintenance 
-// agreement between Cadence and that customer. This model is intended for use 
-// with products only from Cadence Design Systems, Inc.  The use or sharing of 
-// any models from this library or any of its modified/extended form is 
-// strictly prohibited with any non-Cadence products.
-
-// ALL MATERIALS FURNISHED BY CADENCE HEREUNDER ARE PROVIDED "AS IS" WITHOUT 
-// WARRANTY OF ANY KIND, AND CADENCE SPECIFICALLY DISCLAIMS ANY WARRANTY OF 
-// NONINFRINGEMENT, FITNESS FOR A PARTICULAR PURPOSE OR MERCHANTABILITY. 
-// CADENCE SHALL NOT BE LIABLE FOR ANY COSTS OF PROCUREMENT OF SUBSTITUTES, 
-// LOSS OF PROFITS, INTERRUPTION OF BUSINESS, OR FOR ANY OTHER SPECIAL, 
-// CONSEQUENTIAL OR INCIDENTAL DAMAGES, HOWEVER CAUSED, WHETHER FOR BREACH OF 
-// WARRANTY, CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY OR OTHERWISE.
-// --------------------------------------------------------------
 
 //Create a Programmable Second Order Filter having the S domain transfer function
 // H(s) = (Vout / Vin) = 1 / ( (1 + s/Wp1) * (1+ s/Wp2) ). 
+
+//              1
+// -------------------------
+// (1 + s/Wp1) * (1 + s/Wp2)
+
+// In Z form:
+
+//                              1
+// ------------------------------------------------------
+// (1 + K1(1-z^(-1)/(1+z^(-1)))) * K2(1-z^(-1)/(1+z^(-1))))
+
+//            n0 + n1z**(-1)
+// --------------------------------------
+// (d0 + d1z**(-1)) * (e0 + e1z**(-1))
+
+//where
+//n0 = 1, n1 = 1
+//d0 = 1+K1 d1=1-K1
+//e0 = 1+K2 e1=1-K2
 
 `timescale 1s/1ps
 `ifndef M_TWO_PI
