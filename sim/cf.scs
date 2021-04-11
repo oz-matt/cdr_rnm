@@ -1,0 +1,8 @@
+savesNodes options rawfmt=sst2
+timeDom tran stop=100u errpreset=moderate
+amsd {
+
+  ie vsup=3.0
+  
+}
+
