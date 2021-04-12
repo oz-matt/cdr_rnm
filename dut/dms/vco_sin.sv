@@ -27,6 +27,8 @@ module vco_sin (
   real pct_done_with_period=0;
   real vout=0;
   
+  real VcoOutLast=0, fmt1=0, fmt2=0, fmeas=0;
+  
   always begin
     tuned_center = center_freq + (($signed(tune) - 15) * tune_step);
     input_adjusted_target_freq = tuned_center + ((VcoIn - vcoin_mid) * vco_gain);
@@ -44,7 +46,7 @@ module vco_sin (
     vout = vmag * $sin(`M_TWO_PI * input_adjusted_target_freq * phase_acc);
     #(tinc);
   end
-
+  
   assign VcoOut = vout;
 
 endmodule

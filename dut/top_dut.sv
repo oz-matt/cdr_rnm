@@ -14,6 +14,9 @@ module top_dut(input refclk, output logic finalclk);
   real VcoIn;
   logic[4:0] tune;
   real VcoOut;
+  real tnow, tlast, vnow, vlast, fmnow=0, fmlast=0, fmeas=0, fmeas2=0, fmnow2=0, fmlast2=0;
+  
+  logic crossed;
 
   vco_sin vco_i(.*);
   
@@ -30,6 +33,24 @@ module top_dut(input refclk, output logic finalclk);
   end
 
 
+  always @(VcoOut) begin
+    tlast = tnow;
+    vlast = abs(vnow);
+    tnow = $realtime;
+    vnow = abs(VcoOut);
+  end
+  
+  always @(crossed) begin
+    fmlast = fmnow;
+    fmnow = $realtime - ((vnow * ($realtime - tlast)) / (vnow + vlast));
+    fmeas = 1 / ((fmnow - fmlast) * 2 * 1e-9);
+    
+    fmlast2 = fmnow2;
+    fmnow2 = $realtime;
+    fmeas2 = 1 / ((fmnow2 - fmlast2) * 2 * 1e-9);
+  end
+  
+  assign crossed = (VcoOut > 0);
 
 
 
