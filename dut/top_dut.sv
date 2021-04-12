@@ -13,9 +13,9 @@ module top_dut(input refclk, output logic finalclk);
 
   real VcoIn;
   logic[4:0] tune;
-  logic VcoOut;
+  real VcoOut;
 
-  vco vco_i(.*);
+  vco_sin vco_i(.*);
   
   initial begin
     VcoIn = 1.5;
