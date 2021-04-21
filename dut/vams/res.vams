@@ -1,0 +1,12 @@
+
+module res(vp, vn);
+  inout vp, vn;
+  parameter real r = 0;
+
+  electrical vp, vn;
+
+    analog begin
+      V(vp, vn) <+ r*I(vp, vn);
+    end
+
+endmodule

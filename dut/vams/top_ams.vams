@@ -1,0 +1,22 @@
+
+module top_ams();
+
+  electrical out, vdd;
+  real in, en;
+  
+  //ams_sgen as(in);
+  ams_ldo af(in, out, vdd, en);
+  
+  initial begin
+    in = 0; en = 0;
+    #1000;
+    in = 1.0; en = 1;
+    #10000;
+    $finish();
+  end
+
+  analog begin
+    V(vdd) <+ 3.0;
+  end
+  
+endmodule

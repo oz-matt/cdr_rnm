@@ -1,0 +1,21 @@
+`include "discipline.h"
+`include "constants.h"
+
+module ams_sgen(out);
+  output out;
+  
+  electrical out;
+  
+  parameter real gain = 1 from (0:inf);
+  parameter real freq = 10e4 from (1:inf);
+  
+  electrical k, ll;
+  
+  analog begin
+    V(out) <+ gain * sin(`M_TWO_PI * freq * $abstime);
+    $bound_step(0.2/freq);
+    V(k) <+ gain * sin(`M_TWO_PI * freq * $abstime);
+    V(ll) <+ laplace_nd(V(k), {1}, {-10000, 0});
+  end  
+  
+endmodule

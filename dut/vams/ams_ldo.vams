@@ -1,0 +1,44 @@
+`include "discipline.h"
+`include "constants.h"
+
+module ams_ldo(in, out, vdd, en);
+
+  input in, vdd, en;
+  output out;
+  
+  electrical out, vdd, gnd, err, err2;
+  wreal en, in;
+  ground gnd;
+  
+  voltage r1v, r2v;
+  
+  parameter real SCALE = 2 from (0:inf);
+  parameter real K = 300 from (0:inf);
+  
+  real VTARGET;
+  real respass;
+  real ph;
+  
+  always @* begin
+    VTARGET = in * SCALE;
+  end
+  
+  analog begin
+    @ (initial_step) begin
+      respass = 10000.0;
+    end
+    
+    V(err) <+ idt((V(out) - VTARGET)*K);
+    
+    V(r1v) <+ V(err) + 10000;
+    V(r2v) <+ 10000.0;
+      
+  end
+  
+  //always #1 ph <= abs(V(err));
+  
+  resv r1(vdd, out, r1v);
+  resv r2(out, gnd, r2v); 
+
+endmodule
+

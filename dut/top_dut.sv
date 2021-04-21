@@ -16,38 +16,26 @@ import cds_rnm_pkg::*;
 
 module top_dut(input refclk, output logic finalclk);
 
-  real VIN = 0;
-  EEnet VOUT;
-  EEnet VDD;
-  EEnet VSS;
-  logic en;
-  real rload_val, ipass;
-
-  dms_ldo dms_ldo_i(VIN, VOUT, VDD, VSS, en);
+  real cwave, filt_cwave;
   
-  VRsrc rload (
-    .P(VOUT),
-    .N(VSS),
-    .vval(),
-    .rval(rload_val),
-    .imeas(ipass)
-  );
+  //logic clk = 0;
+  
+  //always #1000 clk = !clk;
+  
+  cwave_gen cg(cwave);
+  dms_fir_filt dff(cwave, filt_cwave);
   
   initial begin
-    rload_val = 1e6;
-    en = 1'b0;
-    VIN = 0.0;
-    #100;
-    en = 1'b1;
-    VIN = 1.0;
-    #1000;
-    rload_val = 100;
-    #1000;
-    $finish;
+    #(5ms);
+    $finish();
   end
   
-  assign VDD = '{3.0, `wrealZState, 0};
-  assign VSS = '{0, `wrealZState, 0};
+  //ams_sgen as(in);
+
+  //ams_filter af(in, out);
+  
+  //assign in = '{0, 0, 10000};
+  //assign out = '{0, 0, 10000};
   
   /*logic d, up, down;
   EEnet dms_cp_unfiltered, dms_cp_out, dms_vco_out;

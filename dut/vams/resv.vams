@@ -1,0 +1,13 @@
+
+module resv(vp, vn, r);
+  inout vp, vn;
+  input r;
+  voltage r;
+
+  electrical vp, vn;
+
+    analog begin
+      V(vp, vn) <+ V(r)*I(vp, vn);
+    end
+
+endmodule

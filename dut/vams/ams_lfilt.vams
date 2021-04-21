@@ -1,0 +1,17 @@
+
+module ams_lfilt(in, out);
+  input in;
+  output out;
+  
+  electrical in;
+  electrical out;
+  
+  parameter real c = 1e-6 from [0:inf);
+  parameter real r = 100 from [0:inf);
+  
+  analog begin
+      V(in, out) <+ idt(I(in, out)) / c;
+      V(in, out) <+ I(in, out) * r;
+  end
+
+endmodule

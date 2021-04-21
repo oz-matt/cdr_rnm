@@ -1,40 +1,6 @@
 `include "discipline.h"
 `include "constants.h"
 
-// $Date: 2000/03/13 23:01:48 $
-// $Revision: 1.2 $
-//
-//
-// Based on the OVI Verilog-A Language Reference Manual, version 1.0 1996
-//
-//
- 
-
-
-//--------------------
-// charge_pump
-//
-// -  Charge pump
-//
-// vout:		output terminal from which charge pumped/sucked [V,A]
-// vsrc: 		source terminal from which charge sourced/sunk  [V,A]
-// siginc,sigdec:	Logic signal that control charge pump operation [V,A]
-//
-// INSTANCE parameters
-//    iamp        = charging current magnitude [A]
-//    vtrans      = voltages above this at input are considered high [V]
-//    tdel, trise, tfall = {usual} [s]
-//
-// MODEL parameters
-//    {none}
-//
-// This model can source of sink a fixed current, 'iamp'. Its mode
-// depends on the values of 'siginc' and 'sigdec';
-//    
-//    When 'siginc' > 'vtrans', 'iamp' Amps are pumped from the output.
-//    When 'sigdec' > 'vtrans', 'iamp' Amps are sucked into the output.
-//    When both 'siginc' & 'sigdec' in same state - no current sucked/pumped.
-//
 (* instrument_module *)
 module ams_cp(siginc, sigdec, vout, vsrc);
 input siginc, sigdec;
